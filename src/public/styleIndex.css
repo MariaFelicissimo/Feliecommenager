@@ -1,0 +1,318 @@
+/* ==========================================
+   VARIÁVEIS DE CORES (Modo Claro & Escuro)
+   ========================================== */
+:root {
+    --bg-color: #f1f5f9;
+    --text-color: #1e293b;
+    --card-bg: #ffffff;
+    --primary-color: #2563eb;
+    --primary-hover: #1d4ed8;
+    --border-color: #cbd5e1;
+    --input-bg: #ffffff;
+    --modal-bg: rgba(0, 0, 0, 0.5);
+    --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] {
+    --bg-color: #0b0f19;
+    --text-color: #f8fafc;
+    --card-bg: #1e293b;
+    --primary-color: #3b82f6;
+    --primary-hover: #60a5fa;
+    --border-color: #334155;
+    --input-bg: #0f172a;
+    --modal-bg: rgba(0, 0, 0, 0.75);
+    --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================
+   ESTILOS GERAIS
+   ========================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ==========================================
+   NAVBAR SUPERIOR
+   ========================================== */
+.navbar {
+    background-color: var(--card-bg);
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--primary-color);
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+/* Botões da Navbar */
+.theme-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-btn:hover {
+    border-color: var(--primary-color);
+    transform: scale(1.05);
+}
+
+.btn-login, .btn-signup {
+    padding: 0.5rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.btn-login {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+}
+
+.btn-login:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.btn-signup {
+    background-color: var(--primary-color);
+    border: none;
+    color: #ffffff;
+}
+
+.btn-signup:hover {
+    background-color: var(--primary-hover);
+}
+
+/* ==========================================
+   SEÇÃO HERO
+   ========================================== */
+.hero {
+    text-align: center;
+    padding: 4rem 1.5rem 2rem 1.5rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hero h1 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+}
+
+.hero p {
+    font-size: 1.15rem;
+    opacity: 0.85;
+}
+
+/* ==========================================
+   ÁREA DE TESTE RÁPIDO (SIMULADOR)
+   ========================================== */
+.test-area {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    max-width: 600px;
+    margin: 1.5rem auto 3rem auto;
+    padding: 2.5rem;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+}
+
+.test-area h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.test-area input {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-color);
+    font-size: 1rem;
+    outline: none;
+}
+
+.test-area input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* ==========================================
+   CARDS INFORMATIVOS
+   ========================================== */
+.info-section {
+    max-width: 1100px;
+    margin: 0 auto 4rem auto;
+    padding: 0 1.5rem;
+    width: 100%;
+}
+
+.info-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+.info-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    padding: 2.5rem;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+}
+
+.icon-blue {
+    font-size: 2.2rem;
+    margin-bottom: 1rem;
+}
+
+.info-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+}
+
+.info-card p {
+    font-size: 0.95rem;
+    opacity: 0.75;
+    line-height: 1.5;
+}
+
+/* ==========================================
+   BOTÕES COMUNS (btn-main)
+   ========================================== */
+.btn-main {
+    width: 100%;
+    padding: 0.9rem;
+    background-color: var(--primary-color);
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+}
+
+.btn-main:hover {
+    background-color: var(--primary-hover);
+}
+
+/* ==========================================
+   MODAL CENTRALIZADO
+   ========================================== */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--modal-bg);
+    backdrop-filter: blur(4px);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    padding: 2.5rem;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: var(--shadow);
+}
+
+.modal-content h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-color);
+    font-size: 0.95rem;
+    outline: none;
+}
+
+.modal-content input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.modal-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.btn-login-modal {
+    width: 100%;
+    padding: 0.8rem;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-login-modal:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
