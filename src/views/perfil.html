@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Felicissimo - Perfil & Configurações</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --text-color: #0f172a;
+            --text-muted: #64748b;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --primary: #2563eb;
+        }
+
+        body[data-theme="dark"] {
+            --bg-color: #090d16;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --card-bg: #1e293b;
+            --border-color: #334155;
+            --primary: #38bdf8;
+        }
+
+        body {
+            display: flex;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            width: 100vw;
+            overflow-x: hidden;
+            margin: 0;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        /* Sidebar Fixa */
+        .sidebar {
+            width: 260px;
+            background: var(--card-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 1.5rem;
+            z-index: 10;
+            box-sizing: border-box;
+        }
+
+        .sidebar-top {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .sidebar-brand-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar-brand {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .theme-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.3rem 0.5rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            width: 100%;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: var(--border-color);
+            color: var(--primary);
+        }
+
+        /* Conteúdo Principal */
+        .main-content {
+            margin-left: 260px;
+            flex-grow: 1;
+            padding: 2.5rem;
+            max-width: calc(100vw - 260px);
+            box-sizing: border-box;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+            color: var(--text-color);
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .form-section-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.8rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            margin-bottom: 1.5rem;
+        }
+
+        .form-section-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1.2rem;
+            color: var(--text-color);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            color: var(--text-color);
+            outline: none;
+            box-sizing: border-box;
+            max-width: 400px;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.8rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .checkbox-group input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .btn-main {
+            background-color: #10b981;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-main:hover {
+            background-color: #059669;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BARRA LATERAL -->
+    <aside class="sidebar">
+        <div class="sidebar-top">
+            <div class="sidebar-brand-wrapper">
+                <div class="sidebar-brand">⚡ E-Felicissimo</div>
+                <button class="theme-btn" id="btnTheme" onclick="toggleTheme()" title="Alternar Tema">🌙</button>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="/">🏠 Início</a></li>
+                <li><a href="/dashboard">📊 Dashboard</a></li>
+                <li><a href="/precificacao">🧮 Precificação</a></li>
+                <li><a href="/produtos">📦 Produtos Cadastrados</a></li>
+                <li><a href="/perfil" class="active">👤 Perfil & Configurações</a></li>
+            </ul>
+        </div>
+        <div>
+            <ul class="sidebar-menu">
+                <li><a href="/" style="color: #dc2626;">🚪 Sair</a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="main-content">
+        <div class="page-header">
+            <h1>Perfil & Configurações 👤</h1>
+            <p>Gerencie seus padrões fiscais e custos operacionais automáticos para o e-commerce.</p>
+        </div>
+
+        <form id="formPerfil" onsubmit="salvarConfiguracoes(event)">
+            <!-- SEÇÃO REGIME FISCAL -->
+            <div class="form-section-card">
+                <h3>📄 Regime Fiscal / NF</h3>
+                
+                <label class="checkbox-group">
+                    <input type="checkbox" id="usarNF" name="usarNF"> Emitir Nota Fiscal nos Cálculos
+                </label>
+
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label for="percentualNF">Alíquota da Nota Fiscal (%)</label>
+                    <input type="number" step="0.01" class="form-control" id="percentualNF" name="percentualNF" value="0.00">
+                </div>
+            </div>
+
+            <!-- SEÇÃO CUSTOS OPERACIONAIS -->
+            <div class="form-section-card">
+                <h3>📦 Custos Operacionais Padrões</h3>
+                
+                <label class="checkbox-group">
+                    <input type="checkbox" id="usarEmbalagem" name="usarEmbalagem"> Considerar Custo de Embalagem
+                </label>
+                <div class="form-group">
+                    <label for="custoEmbalagem">Custo Médio por Caixa/Saco (R$)</label>
+                    <input type="number" step="0.01" class="form-control" id="custoEmbalagem" name="custoEmbalagem" value="0.00">
+                </div>
+
+                <label class="checkbox-group" style="margin-top: 1.2rem;">
+                    <input type="checkbox" id="usarGasolina" name="usarGasolina"> Considerar Transporte/Gasolina
+                </label>
+                <div class="form-group">
+                    <label for="custoGasolina">Custo de Deslocamento Rateado (R$)</label>
+                    <input type="number" step="0.01" class="form-control" id="custoGasolina" name="custoGasolina" value="0.00">
+                </div>
+
+                <label class="checkbox-group" style="margin-top: 1.2rem;">
+                    <input type="checkbox" id="usarOutros" name="usarOutros"> Considerar Outros Custos Extras
+                </label>
+                <div class="form-group">
+                    <label for="custoOutros">Valor Outros Custos (R$)</label>
+                    <input type="number" step="0.01" class="form-control" id="custoOutros" name="custoOutros" value="0.00">
+                </div>
+            </div>
+
+            <button type="submit" class="btn-main">💾 Salvar Configurações</button>
+        </form>
+    </main>
+
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.getElementById('btnTheme');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                btn.innerText = '🌙';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                btn.innerText = '☀️';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Carregar configurações ao abrir a página
+        window.addEventListener('DOMContentLoaded', async () => {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                const btn = document.getElementById('btnTheme');
+                if (btn) btn.innerText = '☀️';
+            }
+
+            try {
+                const response = await fetch('/api/perfil');
+                if (response.ok) {
+                    const perfil = await response.json();
+                    
+                    document.getElementById('usarNF').checked = !!perfil.usarNF;
+                    document.getElementById('percentualNF').value = perfil.percentualNF || 0;
+                    
+                    document.getElementById('usarEmbalagem').checked = !!perfil.usarEmbalagem;
+                    document.getElementById('custoEmbalagem').value = perfil.custoEmbalagem || 0;
+                    
+                    document.getElementById('usarGasolina').checked = !!perfil.usarGasolina;
+                    document.getElementById('custoGasolina').value = perfil.custoGasolina || 0;
+                    
+                    document.getElementById('usarOutros').checked = !!perfil.usarOutros;
+                    document.getElementById('custoOutros').value = perfil.custoOutros || 0;
+                }
+            } catch (error) {
+                console.error('Erro ao carregar dados do perfil:', error);
+            }
+        });
+
+        // Salvar configurações via API
+        async function salvarConfiguracoes(event) {
+            event.preventDefault();
+
+            const dados = {
+                usarNF: document.getElementById('usarNF').checked,
+                percentualNF: parseFloat(document.getElementById('percentualNF').value) || 0,
+                usarEmbalagem: document.getElementById('usarEmbalagem').checked,
+                custoEmbalagem: parseFloat(document.getElementById('custoEmbalagem').value) || 0,
+                usarGasolina: document.getElementById('usarGasolina').checked,
+                custoGasolina: parseFloat(document.getElementById('custoGasolina').value) || 0,
+                usarOutros: document.getElementById('usarOutros').checked,
+                custoOutros: parseFloat(document.getElementById('custoOutros').value) || 0
+            };
+
+            try {
+                const response = await fetch('/api/perfil', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dados)
+                });
+
+                if (response.ok) {
+                    alert('Configurações salvas com sucesso!');
+                } else {
+                    alert('Erro ao salvar as configurações no servidor.');
+                }
+            } catch (error) {
+                console.error('Erro de conexão:', error);
+                alert('Erro de conexão com o servidor.');
+            }
+        }
+    </script>
+</body>
+</html>

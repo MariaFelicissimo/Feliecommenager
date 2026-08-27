@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Felicissimo | Cadastro de Lojista</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="cadastro-page">
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <span class="logo" onclick="window.location.href='/'" style="cursor: pointer;">E-Felicissimo</span>
+            <div class="nav-actions">
+                <button id="theme-toggle" class="theme-btn"><i class="fa-solid fa-moon"></i></button>
+                <button class="btn-login" onclick="window.location.href='/'">Voltar ao Início</button>
+                <button class="btn-signup" onclick="window.location.href='/login'">Entrar</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="cadastro-container">
+        <h2 class="form-title">Criar Conta E-Felicissimo</h2>
+        
+        <form action="/cadastro" method="POST">
+            <div class="form-group">
+                <label for="nome">Nome Completo / Razão Social</label>
+                <input type="text" id="nome" name="nome" required placeholder="Maria Fernanda...">
+            </div>
+
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" required placeholder="exemplo@email.com">
+            </div>
+
+            <div class="form-group">
+                <label>Tipo de Conta (Natureza Jurídica)</label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="tipo_pf" name="tipo_usuario" value="PF" checked onchange="toggleDocumento()">
+                        <label for="tipo_pf">Pessoa Física</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="tipo_cnpj" name="tipo_usuario" value="CNPJ" onchange="toggleDocumento()">
+                        <label for="tipo_cnpj">Pessoa Jurídica (CNPJ)</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group" id="documento-container">
+                <label id="label-documento" for="documento">CPF</label>
+                <input type="text" id="documento" name="documento" required placeholder="000.000.000-00">
+            </div>
+
+            <div class="form-group" id="ie-container" style="display: none;">
+                <label for="inscricao_estadual">Inscrição Estadual (IE)</label>
+                <input type="text" id="inscricao_estadual" name="inscricao_estadual" placeholder="000.000.000.000">
+            </div>
+
+            <div class="form-group">
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" name="senha" required placeholder="No mínimo 6 caracteres">
+            </div>
+
+            <button type="submit" class="btn-submit">Finalizar Cadastro</button>
+        </form>
+    </div>
+
+    <script>
+        function toggleDocumento() {
+            const isPF = document.getElementById('tipo_pf').checked;
+            const label = document.getElementById('label-documento');
+            const input = document.getElementById('documento');
+            const ieContainer = document.getElementById('ie-container');
+            const ieInput = document.getElementById('inscricao_estadual');
+            
+            if (isPF) {
+                label.innerText = 'CPF';
+                input.placeholder = '000.000.000-00';
+                ieContainer.style.display = 'none';
+                ieInput.removeAttribute('required');
+            } else {
+                label.innerText = 'CNPJ';
+                input.placeholder = '00.000.000/0001-00';
+                ieContainer.style.display = 'block';
+                ieInput.setAttribute('required', 'required');
+            }
+        }
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>

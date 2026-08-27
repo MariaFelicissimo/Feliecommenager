@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Felicissimo - Gestão e Precificação</title>
+    <!-- CSS Unificado -->
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+    <div style="width: 100%;">
+        <!-- NAVBAR SUPERIOR -->
+        <header class="navbar">
+            <div class="nav-container">
+                <div class="logo">⚡ E-Felicissimo</div>
+                <div class="nav-actions">
+                    <button class="theme-btn" id="btnTheme" onclick="toggleTheme()" title="Alternar Tema">🌙</button>
+                    <button class="btn-login" onclick="abrirModal()">Entrar</button>
+                    <button class="btn-signup" onclick="abrirModal()">Cadastrar</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- SEÇÃO HERO -->
+        <section class="hero">
+            <h1>Precificação Descomplicada para o seu E-commerce 🚀</h1>
+            <p>Calcule custos, margens de lucro e taxas de marketplace em segundos.</p>
+        </section>
+
+        <!-- ÁREA DE TESTE RÁPIDO -->
+        <div class="test-area">
+            <h3>Simule Rapidamente 💡</h3>
+            <input type="text" placeholder="Nome do Produto">
+            <input type="number" placeholder="Custo de Produção (R$)">
+            <button class="btn-main" onclick="abrirModal()">Calcular Agora</button>
+        </div>
+
+        <!-- CARDS INFORMATIVOS -->
+        <section class="info-section">
+            <div class="info-container">
+                <div class="info-card">
+                    <div class="icon-blue">📊</div>
+                    <h3>Controle de Margens</h3>
+                    <p>Defina suas margens exatas para vendas diretas e e-commerce sem perder dinheiro.</p>
+                </div>
+                <div class="info-card">
+                    <div class="icon-blue">🛍️</div>
+                    <h3>Multi-Marketplaces</h3>
+                    <p>Simule rapidamente repasses e taxas operacionais de diferentes canais de venda.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- MODAL CENTRALIZADO -->
+    <div class="modal" id="modalLogin">
+        <div class="modal-content">
+            <h2>Acessar Plataforma 🔑</h2>
+            <br>
+            <input type="email" placeholder="Seu e-mail">
+            <input type="password" placeholder="Sua senha">
+            <div class="modal-buttons">
+                <!-- Redirecionando diretamente para a Dashboard -->
+                <button class="btn-main" onclick="window.location.href='/dashboard'">Entrar</button>
+                <button class="btn-login-modal" onclick="fecharModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS DE INTERAÇÃO -->
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.getElementById('btnTheme');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                btn.innerText = '🌙';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                btn.innerText = '☀️';
+            }
+        }
+
+        function abrirModal() {
+            document.getElementById('modalLogin').style.display = 'flex';
+        }
+
+        function fecharModal() {
+            document.getElementById('modalLogin').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

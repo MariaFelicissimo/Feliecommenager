@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Felicissimo - Calculadora de Precificação</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Variáveis de Cores (Tema Claro Padrão) */
+        :root {
+            --bg-color: #f8fafc;
+            --text-color: #0f172a;
+            --text-muted: #64748b;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --primary: #2563eb;
+        }
+
+        /* Variáveis de Cores (Tema Escuro) */
+        body[data-theme="dark"] {
+            --bg-color: #090d16;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --card-bg: #1e293b;
+            --border-color: #334155;
+            --primary: #38bdf8;
+        }
+
+        body {
+            display: flex;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            width: 100vw;
+            overflow-x: hidden;
+            margin: 0;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        /* Sidebar Fixa */
+        .sidebar {
+            width: 260px;
+            background: var(--card-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 1.5rem;
+            z-index: 10;
+            box-sizing: border-box;
+        }
+
+        .sidebar-top {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .sidebar-brand-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar-brand {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .theme-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.3rem 0.5rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            width: 100%;
+        }
+
+        .sidebar-menu a, .menu-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active, .menu-link:hover, .menu-link.active {
+            background: var(--border-color);
+            color: var(--primary);
+        }
+
+        .btn-logout {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: #dc2626;
+            text-decoration: none;
+            font-weight: 500;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .btn-logout:hover {
+            background: #fee2e2;
+        }
+
+        /* Conteúdo Principal */
+        .main-content {
+            margin-left: 260px;
+            flex-grow: 1;
+            padding: 2.5rem;
+            max-width: calc(100vw - 260px);
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+            color: var(--text-color);
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .calculator-container {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        @media (max-width: 1024px) {
+            .calculator-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-section-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.8rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            margin-bottom: 1.5rem;
+        }
+
+        .form-section-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1.2rem;
+            color: var(--text-color);
+        }
+
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            color: var(--text-color);
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+        }
+
+        .result-card-sticky {
+            background: #0f172a;
+            color: #ffffff;
+            border-radius: 12px;
+            padding: 2rem;
+            position: sticky;
+            top: 2.5rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .result-card-sticky h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            color: #94a3b8;
+        }
+
+        .price-display-box {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .price-display-box span {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #94a3b8;
+            font-weight: 600;
+        }
+
+        .price-display-box h2 {
+            font-size: 2.3rem;
+            color: #38bdf8;
+            font-weight: 800;
+            margin-top: 0.3rem;
+            margin-bottom: 0;
+        }
+
+        .result-details-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            color: #cbd5e1;
+            border-bottom: 1px solid #1e293b;
+            padding-bottom: 0.6rem;
+        }
+
+        .result-row strong {
+            color: #ffffff;
+        }
+
+        .btn-main {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-main:hover {
+            background-color: #1d4ed8;
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-top">
+            <div class="sidebar-brand-wrapper">
+                <div class="sidebar-brand">
+                    <i class="fa-solid fa-chart-line"></i> E-Felicissimo
+                </div>
+                <button class="theme-btn" id="btnTheme" onclick="toggleTheme()" title="Alternar Tema">🌙</button>
+            </div>
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="/dashboard" class="menu-link">
+                        <i class="fa-solid fa-house"></i> Início
+                    </a>
+                </li>
+                <li>
+                    <a href="/precificacao" class="menu-link active">
+                        <i class="fa-solid fa-calculator"></i> Precificação
+                    </a>
+                </li>
+                <li>
+                    <a href="/produtos" class="menu-link">
+                        <i class="fa-solid fa-box"></i> Produtos Cadastrados
+                    </a>
+                </li>
+                <li>
+                    <a href="/perfil" class="menu-link">
+                        <i class="fa-solid fa-user-gear"></i> Perfil & Configurações
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div>
+            <a href="/logout" class="btn-logout">
+                <i class="fa-solid fa-right-from-bracket"></i> Sair
+            </a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1>Calculadora de Precificação 🧮</h1>
+            <p>Calcule o preço de venda ideal para e-commerce garantindo sua margem de lucro.</p>
+        </div>
+
+        <div class="calculator-container">
+            <div class="form-column">
+                <div class="form-section-card" id="infoPerfilCard" style="border-left: 4px solid var(--primary);">
+                    <h3>🏢 Status Fiscal Atual (Perfil)</h3>
+                    <p id="statusPerfilTexto" style="margin: 0; font-size: 0.9rem; color: var(--text-muted);">Carregando regras do perfil...</p>
+                </div>
+
+                <div class="form-section-card">
+                    <h3>🏷️ 1. Informações do Produto</h3>
+                    <div class="form-group">
+                        <label for="nomeProduto">Nome / Título do Produto</label>
+                        <input type="text" id="nomeProduto" name="nomeProduto" class="form-control" placeholder="Ex: Bota Montaria Sola Prada">
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label for="custoProducao">Custo de Compra / Produção (R$)</label>
+                            <input type="number" step="0.01" class="form-control" id="custoProducao" name="custoProducao" value="0.00" oninput="calcular()">
+                        </div>
+                        <div class="form-group">
+                            <label for="freteEntrada">Frete de Entrada Rateado (R$)</label>
+                            <input type="number" step="0.01" class="form-control" id="freteEntrada" name="freteEntrada" value="0.00" oninput="calcular()">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section-card">
+                    <h3>📦 2. Custos Operacionais e Margem</h3>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label for="custoEmbalagem">Embalagem / Caixa (R$)</label>
+                            <input type="number" step="0.01" class="form-control" id="custoEmbalagem" name="custoEmbalagem" value="0.00" oninput="calcular()">
+                        </div>
+                        <div class="form-group">
+                            <label for="custoGasolina">Transporte / Gasolina (R$)</label>
+                            <input type="number" step="0.01" class="form-control" id="custoGasolina" name="custoGasolina" value="0.00" oninput="calcular()">
+                        </div>
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label for="custoOutros">Outros Custos Extras (R$)</label>
+                            <input type="number" step="0.01" class="form-control" id="custoOutros" name="custoOutros" value="0.00" oninput="calcular()">
+                        </div>
+                        <div class="form-group">
+                            <label for="percentualNF">Imposto / NF padrão (%)</label>
+                            <input type="number" step="0.01" class="form-control" id="percentualNF" name="percentualNF" value="0.00" oninput="calcular()">
+                        </div>
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label for="taxaMarketplace">Taxa do Marketplace / comissão (%)</label>
+                            <input type="number" step="0.01" class="form-control" id="taxaMarketplace" name="taxaMarketplace" value="16.00" oninput="calcular()">
+                        </div>
+                        <div class="form-group">
+                            <label for="margemLucro">Margem de Lucro Desejada (%)</label>
+                            <input type="number" step="0.01" class="form-control" id="margemLucro" name="margemLucro" value="20.00" oninput="calcular()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-column">
+                <div class="result-card-sticky">
+                    <h3>🧾 Resultado Principal</h3>
+                    
+                    <div class="price-display-box">
+                        <span>Preço Sugerido de Venda</span>
+                        <h2 id="resPrecoSugerido">R$ 0,00</h2>
+                    </div>
+
+                    <div class="result-details-list">
+                        <div class="result-row">
+                            <span>Custo Total do Produto:</span>
+                            <strong id="resCustoTotal">R$ 0,00</strong>
+                        </div>
+                        <div class="result-row">
+                            <span>Taxas + Impostos Totais:</span>
+                            <strong id="resTaxasImpostos">R$ 0,00</strong>
+                        </div>
+                        <div class="result-row">
+                            <span>Lucro Líquido Real:</span>
+                            <strong id="resLucroLiquido" style="color: #4ade80;">R$ 0,00</strong>
+                        </div>
+                        <div class="result-row">
+                            <span>Markup Aplicado:</span>
+                            <strong id="resMarkup">0.00x</strong>
+                        </div>
+                    </div>
+
+                    <button class="btn-main" style="width: 100%;" onclick="salvarProduto()">Salvar Produto</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Variáveis globais para armazenar os últimos cálculos e enviar ao back-end
+        let dadosCalculados = {
+            custoTotalCalculado: 0,
+            precoVendaCalculado: 0,
+            lucroLiquidoCalculado: 0
+        };
+
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.getElementById('btnTheme');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                btn.innerText = '🌙';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                btn.innerText = '☀️';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        function calcular() {
+            const custoProd = parseFloat(document.getElementById('custoProducao').value) || 0;
+            const freteEntrada = parseFloat(document.getElementById('freteEntrada').value) || 0;
+            const embalagem = parseFloat(document.getElementById('custoEmbalagem').value) || 0;
+            const gasolina = parseFloat(document.getElementById('custoGasolina').value) || 0;
+            const outros = parseFloat(document.getElementById('custoOutros').value) || 0;
+            
+            const percNF = (parseFloat(document.getElementById('percentualNF').value) || 0) / 100;
+            const percMkt = (parseFloat(document.getElementById('taxaMarketplace').value) || 0) / 100;
+            const percLucro = (parseFloat(document.getElementById('margemLucro').value) || 0) / 100;
+
+            const custoTotalProduto = custoProd + freteEntrada + embalagem + gasolina + outros;
+            const divisor = 1 - (percNF + percMkt + percLucro);
+            
+            let precoSugerido = 0;
+            if (divisor > 0) {
+                precoSugerido = custoTotalProduto / divisor;
+            }
+
+            const valorImpostosTotais = precoSugerido * (percNF + percMkt);
+            const lucroLiquidoReal = precoSugerido * percLucro;
+            const markup = custoTotalProduto > 0 ? (precoSugerido / custoTotalProduto) : 0;
+
+            // Armazena no objeto para envio
+            dadosCalculados = {
+                custoTotalCalculado: custoTotalProduto,
+                precoVendaCalculado: precoSugerido,
+                lucroLiquidoCalculado: lucroLiquidoReal
+            };
+
+            document.getElementById('resPrecoSugerido').innerText = `R$ ${precoSugerido.toFixed(2).replace('.', ',')}`;
+            document.getElementById('resCustoTotal').innerText = `R$ ${custoTotalProduto.toFixed(2).replace('.', ',')}`;
+            document.getElementById('resTaxasImpostos').innerText = `R$ ${valorImpostosTotais.toFixed(2).replace('.', ',')}`;
+            document.getElementById('resLucroLiquido').innerText = `R$ ${lucroLiquidoReal.toFixed(2).replace('.', ',')}`;
+            document.getElementById('resMarkup').innerText = `${markup.toFixed(2)}x`;
+        }
+
+        async function salvarProduto() {
+            const nome = document.getElementById('nomeProduto').value.trim();
+            if (!nome) {
+                alert('Preencha o nome do produto antes de salvar!');
+                document.getElementById('nomeProduto').focus();
+                return;
+            }
+
+            const payload = {
+                nome: nome,
+                custoProducao: parseFloat(document.getElementById('custoProducao').value) || 0,
+                freteEntrada: parseFloat(document.getElementById('freteEntrada').value) || 0,
+                custoEmbalagem: parseFloat(document.getElementById('custoEmbalagem').value) || 0,
+                custoGasolina: parseFloat(document.getElementById('custoGasolina').value) || 0,
+                custoOutros: parseFloat(document.getElementById('custoOutros').value) || 0,
+                percentualNF: parseFloat(document.getElementById('percentualNF').value) || 0,
+                taxaMarketplace: parseFloat(document.getElementById('taxaMarketplace').value) || 0,
+                margemLucro: parseFloat(document.getElementById('margemLucro').value) || 0,
+                custoTotalCalculado: dadosCalculados.custoTotalCalculado,
+                precoVendaCalculado: dadosCalculados.precoVendaCalculado,
+                lucroLiquidoCalculado: dadosCalculados.lucroLiquidoCalculado
+            };
+
+            try {
+                const response = await fetch('/api/produtos', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    alert('Produto salvo com sucesso! Redirecionando para a listagem...');
+                    window.location.href = '/produtos';
+                } else {
+                    const erroData = await response.json().catch(() => ({}));
+                    alert(erroData.message || 'Erro ao salvar o produto no servidor.');
+                }
+            } catch (error) {
+                console.error('Erro na requisição:', error);
+                alert('Erro de conexão ao tentar salvar o produto.');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                const btn = document.getElementById('btnTheme');
+                if (btn) btn.innerText = '☀️';
+            }
+
+            try {
+                const response = await fetch('/api/perfil');
+                if (response.ok) {
+                    const perfil = await response.json();
+                    
+                    const tipoFormatado = perfil.tipoPessoa ? perfil.tipoPessoa.toUpperCase() : 'Não informado';
+                    const docFormatado = perfil.documento || 'Pendente';
+                    document.getElementById('statusPerfilTexto').innerText = 
+                        `Tipo: ${tipoFormatado} | Documento: ${docFormatado} | NF: ${perfil.usarNF ? perfil.percentualNF + '%' : 'Inativa'}`;
+
+                    if (perfil.usarEmbalagem && document.getElementById('custoEmbalagem')) {
+                        document.getElementById('custoEmbalagem').value = perfil.custoEmbalagem;
+                    }
+                    if (perfil.usarGasolina && document.getElementById('custoGasolina')) {
+                        document.getElementById('custoGasolina').value = perfil.custoGasolina;
+                    }
+                    if (perfil.usarOutros && document.getElementById('custoOutros')) {
+                        document.getElementById('custoOutros').value = perfil.custoOutros;
+                    }
+                    if (perfil.usarNF && document.getElementById('percentualNF')) {
+                        document.getElementById('percentualNF').value = perfil.percentualNF;
+                    }
+                }
+            } catch (error) {
+                console.error('Erro ao carregar dados do perfil:', error);
+                document.getElementById('statusPerfilTexto').innerText = 'Erro ao carregar configurações de perfil.';
+            }
+
+            calcular();
+        });
+    </script>
+</body>
+</html>

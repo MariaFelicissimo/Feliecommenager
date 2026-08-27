@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Felicissimo | Login</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <span class="logo" onclick="window.location.href='/dashboard'" style="cursor: pointer;">E-Felicissimo</span>
+            <div class="nav-actions">
+                <button id="theme-toggle" class="theme-btn"><i class="fa-solid fa-moon"></i></button>
+                <button class="btn-login" onclick="window.location.href='/precificacao'">Precificar</button>
+                <button class="btn-login" onclick="window.location.href='/produtos'">Produtos</button>
+                <button class="btn-signup" onclick="window.location.href='/perfil'">Perfil</button>
+                <button class="btn-login" onclick="window.location.href='/login'">Sair</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-container">
+        <div class="login-container" style="max-width: 400px; margin: 40px auto; padding: 2rem;">
+            <h2 class="form-title" style="text-align: center; margin-bottom: 1.5rem;">Entrar no E-Felicissimo</h2>
+            
+            <div id="msgErro" class="alert-error" style="display: none; background-color: #fee2e2; color: #991b1b; padding: 0.75rem; border-radius: 6px; margin-bottom: 1rem; text-align: center; font-size: 0.9rem;"></div>
+
+            <form id="loginForm">
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label for="email" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">E-mail</label>
+                    <input type="email" id="email" name="email" required placeholder="exemplo@email.com" style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box;">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label for="senha" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Senha</label>
+                    <input type="password" id="senha" name="senha" required placeholder="Sua senha secreta" style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box;">
+                </div>
+
+                <button type="submit" class="btn-action" style="width: 100%; padding: 0.75rem; background-color: #2563eb; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; margin-top: 1rem;">Acessar Conta</button>
+                
+                <a href="/cadastro" style="display: block; text-align: center; margin-top: 1rem; color: #2563eb; text-decoration: none; font-size: 0.9rem;">Não tem uma conta? Cadastre-se</a>
+            </form>
+        </div>
+    </main>
+
+    <script src="/script.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const msgErro = document.getElementById('msgErro');
+            msgErro.style.display = 'none';
+
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, senha })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.erro || 'E-mail ou senha incorretos.');
+                }
+
+                window.location.href = '/dashboard';
+            } catch (error) {
+                msgErro.textContent = error.message;
+                msgErro.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

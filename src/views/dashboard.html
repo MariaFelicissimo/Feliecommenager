@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Felicissimo - Dashboard</title>
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --sidebar-bg: #ffffff;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --table-header-bg: #f8fafc;
+            --hover-bg: #eff6ff;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #0f172a;
+            --sidebar-bg: #1e293b;
+            --card-bg: #1e293b;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --table-header-bg: #1e293b;
+            --hover-bg: #334155;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            width: 100vw;
+            overflow-x: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Sidebar Fixa e Organizada */
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 1.5rem;
+            z-index: 10;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .sidebar-top {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .sidebar-brand-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar-brand {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .theme-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.3rem 0.5rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: var(--hover-bg);
+            color: var(--primary);
+        }
+
+        /* Conteúdo Principal Ajustado ao lado da Sidebar */
+        .dashboard-main {
+            margin-left: 260px;
+            flex-grow: 1;
+            padding: 2.5rem;
+            max-width: calc(100vw - 260px);
+        }
+
+        .dashboard-header {
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-header h1 {
+            font-size: 1.8rem;
+            color: var(--text-color);
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .dashboard-header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Grid de Cards de Estatísticas */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .stat-card span {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .stat-card h2 {
+            font-size: 2rem;
+            color: var(--text-color);
+            margin-top: 0.5rem;
+            font-weight: 700;
+        }
+
+        /* Seção de Ação Rápida */
+        .action-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .action-section h3 {
+            font-size: 1.1rem;
+            color: var(--text-color);
+            margin-bottom: 0.2rem;
+        }
+
+        .action-section p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* Tabela Estilizada */
+        .table-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .table-card h3 {
+            font-size: 1.1rem;
+            color: var(--text-color);
+            margin-bottom: 0.3rem;
+        }
+
+        .table-card p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--table-header-bg);
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        td {
+            color: var(--text-color);
+        }
+
+        .badge-allowed {
+            color: #16a34a;
+            background: #dcfce7;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        [data-theme="dark"] .badge-allowed {
+            color: #4ade80;
+            background: rgba(22, 163, 74, 0.2);
+        }
+
+        .badge-denied {
+            color: #dc2626;
+            background: #fee2e2;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        [data-theme="dark"] .badge-denied {
+            color: #f87171;
+            background: rgba(220, 38, 38, 0.2);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.65rem 1.2rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BARRA LATERAL (SIDEBAR) -->
+    <aside class="sidebar">
+        <div class="sidebar-top">
+            <div class="sidebar-brand-wrapper">
+                <div class="sidebar-brand">⚡ E-Felicissimo</div>
+                <button class="theme-btn" id="btnTheme" onclick="toggleTheme()" title="Alternar Tema">🌙</button>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="/">🏠 Início</a></li>
+                <li><a href="/dashboard" class="active">📊 Dashboard</a></li>
+                <li><a href="/precificacao">🧮 Precificação</a></li>
+                <li><a href="/produtos">📦 Produtos Cadastrados</a></li>
+                <li><a href="/perfil">👤 Perfil & Configurações</a></li>
+            </ul>
+        </div>
+        <div>
+            <ul class="sidebar-menu">
+                <li><a href="/" style="color: #dc2626;">🚪 Sair</a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="dashboard-main">
+        <div class="dashboard-header">
+            <h1>Visão Geral do Negócio</h1>
+            <p>Acompanhe suas métricas e acesse as ferramentas de precificação rápida.</p>
+        </div>
+
+        <!-- CARDS DE MÉTRICAS -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span>Total de Produtos Cadastrados</span>
+                <h2>0</h2>
+            </div>
+            <div class="stat-card">
+                <span>Regime Fiscal Configurado</span>
+                <h2 style="font-size: 1.5rem; margin-top: 1rem; color: var(--text-muted);">-</h2>
+            </div>
+        </div>
+
+        <!-- AÇÃO RÁPIDA -->
+        <div class="action-section">
+            <div>
+                <h3>Precificação Inteligente</h3>
+                <p>Calcule o preço ideal para os marketplaces considerando taxas e custos.</p>
+            </div>
+            <a href="/precificacao" class="btn-primary">🧮 Precificar Novo Produto</a>
+        </div>
+
+        <!-- GUIA DE MARKETPLACES -->
+        <div class="table-card">
+            <h3>Guia de Marketplaces: Requisitos CPF vs CNPJ</h3>
+            <p>Consulte abaixo quais plataformas aceitam cadastro por CPF ou exigem obrigatoriamente CNPJ:</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Marketplace</th>
+                        <th>Suporte CPF</th>
+                        <th>Suporte CNPJ</th>
+                        <th>Observações / Padrão</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Shopee</strong></td>
+                        <td><span class="badge-allowed">Permitido</span></td>
+                        <td><span class="badge-allowed">Permitido</span></td>
+                        <td>16% comissão padrão</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mercado Livre</strong></td>
+                        <td><span class="badge-allowed">Permitido</span></td>
+                        <td><span class="badge-allowed">Permitido</span></td>
+                        <td>Clássico 13% / Premium 19%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Amazon</strong></td>
+                        <td><span class="badge-allowed">Permitido</span></td>
+                        <td><span class="badge-allowed">Permitido</span></td>
+                        <td>10% a 15% conforme categoria</td>
+                    </tr>
+                    <tr>
+                        <td><strong>TikTok Shop</strong></td>
+                        <td><span class="badge-allowed">Permitido</span></td>
+                        <td><span class="badge-allowed">Permitido</span></td>
+                        <td>Regra vigente de lançamento</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Magalu</strong></td>
+                        <td><span class="badge-denied">Não Aceita</span></td>
+                        <td><span class="badge-allowed">Exigido</span></td>
+                        <td>Exige CNPJ ativo</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Netshoes</strong></td>
+                        <td><span class="badge-denied">Não Aceita</span></td>
+                        <td><span class="badge-allowed">Exigido</span></td>
+                        <td>Forte em calçados e esporte</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- SCRIPT DE ALTERNAR TEMA -->
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.getElementById('btnTheme');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                btn.innerText = '🌙';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                btn.innerText = '☀️';
+            }
+        }
+    </script>
+</body>
+</html>
