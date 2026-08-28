@@ -126,6 +126,14 @@ body {
     flex-grow: 1;
     padding: 2.5rem;
     max-width: calc(100vw - 260px);
+    color: var(--text-color);
+}
+
+.dashboard-main h1, 
+.dashboard-main h2, 
+.dashboard-main h3, 
+.dashboard-main p {
+    color: var(--text-color);
 }
 
 .dashboard-header {
@@ -134,7 +142,6 @@ body {
 
 .dashboard-header h1 {
     font-size: 1.8rem;
-    color: var(--text-color);
     font-weight: 700;
     margin-bottom: 0.3rem;
 }
