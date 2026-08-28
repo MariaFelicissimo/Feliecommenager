@@ -6,7 +6,6 @@
     <title>E-Felicissimo - Calculadora de Precificação</title>
     <link rel="stylesheet" href="/precificacao.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
 </head>
 <body>
 
@@ -142,14 +141,30 @@
                         </div>
                     </div>
 
-                    <button class="btn-main" style="width: 100%;" onclick="salvarProduto()">Salvar Produto</button>
+                    <!-- Prévia por Marketplace -->
+                    <div class="marketplace-preview-card">
+                        <h4><i class="fa-solid fa-store"></i> Prévia por Marketplace</h4>
+                        <div class="preview-item">
+                            <span>Mercado Livre (16%):</span>
+                            <span id="prevMercadoLivre">R$ 0,00</span>
+                        </div>
+                        <div class="preview-item">
+                            <span>Shopee (20%):</span>
+                            <span id="prevShopee">R$ 0,00</span>
+                        </div>
+                        <div class="preview-item">
+                            <span>Magalu / Netshoes (18%):</span>
+                            <span id="prevMagalu">R$ 0,00</span>
+                        </div>
+                    </div>
+
+                    <button class="btn-main" onclick="salvarProduto()">Salvar Produto</button>
                 </div>
             </div>
         </div>
     </main>
 
     <script>
-        // Variáveis globais para armazenar os últimos cálculos e enviar ao back-end
         let dadosCalculados = {
             custoTotalCalculado: 0,
             precoVendaCalculado: 0,
@@ -159,7 +174,6 @@
         function toggleTheme() {
             const body = document.body;
             const btn = document.getElementById('btnTheme');
-            
             if (body.getAttribute('data-theme') === 'dark') {
                 body.removeAttribute('data-theme');
                 btn.innerText = '🌙';
@@ -194,7 +208,11 @@
             const lucroLiquidoReal = precoSugerido * percLucro;
             const markup = custoTotalProduto > 0 ? (precoSugerido / custoTotalProduto) : 0;
 
-            // Armazena no objeto para envio
+            // Prévia em diferentes taxas de marketplaces simuladas
+            const precoML = custoTotalProduto / (1 - (percNF + 0.16 + percLucro));
+            const precoShopee = custoTotalProduto / (1 - (percNF + 0.20 + percLucro));
+            const precoMagalu = custoTotalProduto / (1 - (percNF + 0.18 + percLucro));
+
             dadosCalculados = {
                 custoTotalCalculado: custoTotalProduto,
                 precoVendaCalculado: precoSugerido,
@@ -206,6 +224,10 @@
             document.getElementById('resTaxasImpostos').innerText = `R$ ${valorImpostosTotais.toFixed(2).replace('.', ',')}`;
             document.getElementById('resLucroLiquido').innerText = `R$ ${lucroLiquidoReal.toFixed(2).replace('.', ',')}`;
             document.getElementById('resMarkup').innerText = `${markup.toFixed(2)}x`;
+
+            document.getElementById('prevMercadoLivre').innerText = `R$ ${precoML.toFixed(2).replace('.', ',')}`;
+            document.getElementById('prevShopee').innerText = `R$ ${precoShopee.toFixed(2).replace('.', ',')}`;
+            document.getElementById('prevMagalu').innerText = `R$ ${precoMagalu.toFixed(2).replace('.', ',')}`;
         }
 
         async function salvarProduto() {
@@ -234,9 +256,7 @@
             try {
                 const response = await fetch('/api/produtos', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
 
@@ -265,7 +285,6 @@
                 const response = await fetch('/api/perfil');
                 if (response.ok) {
                     const perfil = await response.json();
-                    
                     const tipoFormatado = perfil.tipoPessoa ? perfil.tipoPessoa.toUpperCase() : 'Não informado';
                     const docFormatado = perfil.documento || 'Pendente';
                     document.getElementById('statusPerfilTexto').innerText = 
