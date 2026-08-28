@@ -1,6 +1,7 @@
 /* ==========================================
-   VARIÁVEIS DE CORES (Modo Claro & Escuro)
+   VARIÁVEIS DE CORES
    ========================================== */
+
 :root {
     --bg-color: #f8fafc;
     --sidebar-bg: #ffffff;
@@ -11,6 +12,9 @@
     --hover-bg: #eff6ff;
     --primary: #2563eb;
     --primary-hover: #1d4ed8;
+
+    /* Largura única da sidebar */
+    --sidebar-width: 280px;
 }
 
 [data-theme="dark"] {
@@ -26,42 +30,54 @@
 }
 
 /* ==========================================
-   ESTILOS GERAIS & RESET
+   RESET
    ========================================== */
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
 }
 
 body {
-    display: flex;
     background-color: var(--bg-color);
     color: var(--text-color);
-    min-height: 100vh;
-    width: 100vw;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     overflow-x: hidden;
-    transition: background-color 0.3s, color 0.3s;
 }
 
 /* ==========================================
-   SIDEBAR FIXA
+   SIDEBAR
    ========================================== */
+
 .sidebar {
-    width: 260px;
-    background: var(--sidebar-bg);
-    border-right: 1px solid var(--border-color);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    width: var(--sidebar-width);
     height: 100vh;
+
     position: fixed;
     top: 0;
     left: 0;
+
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border-color);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
     padding: 1.5rem;
-    z-index: 100;
-    transition: background-color 0.3s, border-color 0.3s;
+
+    z-index: 1000;
+
+    transition:
+        background-color 0.3s,
+        border-color 0.3s;
 }
 
 .sidebar-top {
@@ -98,20 +114,27 @@ body {
     gap: 0.5rem;
 }
 
-.sidebar-menu a, .btn-logout {
+.sidebar-menu a,
+.btn-logout {
     display: flex;
     align-items: center;
     gap: 0.75rem;
+
     padding: 0.75rem 1rem;
+
     color: var(--text-muted);
     text-decoration: none;
+
     border-radius: 6px;
+
     font-weight: 500;
     font-size: 0.95rem;
+
     transition: all 0.2s;
 }
 
-.sidebar-menu a:hover, .sidebar-menu a.active {
+.sidebar-menu a:hover,
+.sidebar-menu a.active {
     background: var(--hover-bg);
     color: var(--primary);
 }
@@ -122,14 +145,27 @@ body {
 }
 
 /* ==========================================
-   CONTEÚDO PRINCIPAL (COM MARGEM DA SIDEBAR)
+   CONTEÚDO PRINCIPAL
    ========================================== */
+
 .main-content {
-    margin-left: 260px;
-    flex-grow: 1;
+    /*
+     * O conteúdo começa EXATAMENTE depois da sidebar.
+     */
+    margin-left: var(--sidebar-width);
+
+    /*
+     * Ocupa somente o espaço restante.
+     */
+    width: calc(100% - var(--sidebar-width));
+
+    min-height: 100vh;
+
     padding: 2.5rem;
-    width: calc(100vw - 260px);
+
     color: var(--text-color);
+
+    overflow-x: hidden;
 }
 
 .page-header {
@@ -149,23 +185,29 @@ body {
 }
 
 /* ==========================================
-   LAYOUT DA CALCULADORA (GRID DUPLO)
+   CALCULADORA
    ========================================== */
+
 .calculator-container {
     display: grid;
-    grid-template-columns: 1fr 380px;
+
+    /*
+     * A coluna da direita fica fixa e a esquerda
+     * ocupa automaticamente o restante.
+     */
+    grid-template-columns: minmax(0, 1fr) 380px;
+
     gap: 2rem;
+
     align-items: start;
+
+    width: 100%;
     max-width: 1200px;
 }
 
-@media (max-width: 1024px) {
-    .calculator-container {
-        grid-template-columns: 1fr;
-    }
-}
-
 .form-column {
+    min-width: 0;
+
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
@@ -173,17 +215,25 @@ body {
 
 .form-section-card {
     background: var(--card-bg);
+
     border: 1px solid var(--border-color);
     border-radius: 12px;
+
     padding: 1.5rem;
+
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-    transition: background-color 0.3s, border-color 0.3s;
+
+    transition:
+        background-color 0.3s,
+        border-color 0.3s;
 }
 
 .form-section-card h3 {
     font-size: 1.1rem;
     font-weight: 700;
+
     color: var(--text-color);
+
     margin-bottom: 1.2rem;
 }
 
@@ -191,12 +241,6 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
-}
-
-@media (max-width: 600px) {
-    .form-grid-2 {
-        grid-template-columns: 1fr;
-    }
 }
 
 .form-group {
@@ -209,77 +253,113 @@ body {
 
 .form-group label {
     display: block;
+
     font-size: 0.85rem;
     font-weight: 600;
+
     color: var(--text-color);
+
     margin-bottom: 0.4rem;
 }
 
 .form-control {
     width: 100%;
+
     padding: 0.75rem 1rem;
+
     background-color: var(--bg-color);
+
     border: 1px solid var(--border-color);
     border-radius: 8px;
+
     color: var(--text-color);
+
     font-size: 0.95rem;
+
     outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
+
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
 }
 
 .form-control:focus {
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
 /* ==========================================
-   COLUNA DE RESULTADOS & PRÉVIA
+   RESULTADOS
    ========================================== */
+
 .result-column {
+    min-width: 0;
     position: relative;
 }
 
 .result-card-sticky {
     background: var(--card-bg);
+
     border: 1px solid var(--border-color);
     border-radius: 12px;
+
     padding: 1.5rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+
+    box-shadow:
+        0 4px 6px -1px rgba(0, 0, 0, 0.05);
+
     position: sticky;
     top: 2rem;
+
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
-    transition: background-color 0.3s, border-color 0.3s;
+
+    transition:
+        background-color 0.3s,
+        border-color 0.3s;
 }
 
 .result-card-sticky h3 {
     font-size: 1.1rem;
     font-weight: 700;
+
     color: var(--text-color);
+
     border-bottom: 1px solid var(--border-color);
+
     padding-bottom: 0.75rem;
 }
 
 .price-display-box {
     background: var(--bg-color);
+
     border: 1px solid var(--border-color);
     border-radius: 10px;
+
     padding: 1.2rem;
+
     text-align: center;
 }
 
 .price-display-box span {
     font-size: 0.85rem;
     color: var(--text-muted);
+
     font-weight: 600;
+
     text-transform: uppercase;
 }
 
 .price-display-box h2 {
     font-size: 2.2rem;
+
     color: var(--primary);
+
     font-weight: 800;
+
     margin-top: 0.3rem;
 }
 
@@ -293,6 +373,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     font-size: 0.9rem;
 }
 
@@ -304,12 +385,18 @@ body {
     color: var(--text-color);
 }
 
-/* Prévia por Marketplace Instigante */
+/* ==========================================
+   MARKETPLACE
+   ========================================== */
+
 .marketplace-preview-card {
     background: var(--bg-color);
+
     border: 1px solid var(--border-color);
     border-radius: 10px;
+
     padding: 1rem;
+
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
@@ -318,9 +405,9 @@ body {
 .marketplace-preview-card h4 {
     font-size: 0.9rem;
     font-weight: 700;
+
     color: var(--text-color);
-    border-bottom: none;
-    padding-bottom: 0;
+
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -330,6 +417,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     font-size: 0.85rem;
 }
 
@@ -342,23 +430,76 @@ body {
     font-weight: 700;
 }
 
+/* ==========================================
+   BOTÃO
+   ========================================== */
+
 .btn-main {
+    width: 100%;
+
     background-color: var(--primary);
     color: #ffffff;
+
     border: none;
     border-radius: 8px;
+
     padding: 0.85rem;
+
     font-weight: 600;
     font-size: 1rem;
+
     cursor: pointer;
+
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
+
     transition: background-color 0.2s;
-    width: 100%;
 }
 
 .btn-main:hover {
     background-color: var(--primary-hover);
+}
+
+/* ==========================================
+   RESPONSIVIDADE
+   ========================================== */
+
+@media (max-width: 1200px) {
+    .calculator-container {
+        grid-template-columns: minmax(0, 1fr) 320px;
+    }
+}
+
+@media (max-width: 900px) {
+    .calculator-container {
+        grid-template-columns: 1fr;
+    }
+
+    .result-card-sticky {
+        position: relative;
+        top: 0;
+    }
+}
+
+@media (max-width: 700px) {
+
+    :root {
+        --sidebar-width: 0px;
+    }
+
+    .sidebar {
+        display: none;
+    }
+
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 1.25rem;
+    }
+
+    .form-grid-2 {
+        grid-template-columns: 1fr;
+    }
 }
