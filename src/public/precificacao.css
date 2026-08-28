@@ -62,7 +62,7 @@ body {
     top: 0;
     left: 0;
     padding: 1.5rem;
-    z-index: 10;
+    z-index: 100;
     transition: background-color 0.3s, border-color 0.3s;
 }
 
@@ -125,7 +125,7 @@ body {
     margin-left: 260px;
     flex-grow: 1;
     padding: 2.5rem;
-    max-width: calc(100vw - 260px);
+    width: calc(100vw - 260px);
     color: var(--text-color);
 }
 
@@ -306,7 +306,7 @@ td {
 }
 
 /* ==========================================
-   FORMULÁRIOS E PRECIFICAÇÃO
+   LAYOUT PROFISSIONAL DE PRECIFICAÇÃO (GRID DUPLO COM PRÉVIA)
    ========================================== */
 .precificacao-container, 
 main form, 
@@ -316,10 +316,29 @@ main form,
     border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 2.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-    max-width: 750px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    max-width: 1100px;
     margin-top: 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 2.5rem;
+    align-items: start;
     transition: background-color 0.3s, border-color 0.3s;
+}
+
+@media (max-width: 900px) {
+    .precificacao-container, 
+    main form, 
+    .form-card, 
+    .dashboard-main form {
+        grid-template-columns: 1fr;
+    }
+}
+
+.form-inputs-side {
+    display: flex;
+    flex-direction: column;
 }
 
 main label, 
@@ -333,7 +352,7 @@ main label,
 }
 
 main label:first-of-type, 
-.dashboard-main form > label:first-of-type {
+.dashboard-main form label:first-of-type {
     margin-top: 0;
 }
 
@@ -373,7 +392,7 @@ main input[type="submit"],
     color: #ffffff;
     border: none;
     border-radius: 8px;
-    padding: 0.85rem 1.5rem;
+    padding: 0.9rem 1.5rem;
     font-weight: 600;
     font-size: 1rem;
     cursor: pointer;
@@ -384,10 +403,50 @@ main input[type="submit"],
     gap: 0.5rem;
     transition: background-color 0.2s;
     width: 100%;
+    grid-column: 1 / -1;
 }
 
 main button[type="submit"]:hover,
 main input[type="submit"]:hover,
 .btn-salvar:hover {
     background-color: var(--primary-hover);
+}
+
+/* Painel Lateral de Prévia por Marketplace */
+.marketplace-preview-card {
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.marketplace-preview-card h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-color);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.preview-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+.preview-item span:first-child {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.preview-item span:last-child {
+    color: var(--text-color);
+    font-weight: 700;
 }
