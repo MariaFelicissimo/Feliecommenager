@@ -1,123 +1,14 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Felicissimo | Detalhes do Produto</title>
-    <link rel="stylesheet" href="/produto detalhe.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
-<body>
-
-    <aside class="sidebar">
-        <div>
-            <div class="brand" style="font-size: 1.3rem; font-weight: bold; color: #ffffff; margin-bottom: 2rem; display: flex; align-items: center; gap: 0.5rem;">
-                <i class="fa-solid fa-chart-line"></i> E-Felicissimo
-            </div>
-            <ul class="menu" style="list-style: none; padding: 0; margin: 0;">
-                <li class="menu-item" style="margin-bottom: 0.5rem;">
-                    <a href="/dashboard" class="menu-link">
-                        <i class="fa-solid fa-house"></i> Início
-                    </a>
-                </li>
-                <li class="menu-item" style="margin-bottom: 0.5rem;">
-                    <a href="/precificacao" class="menu-link">
-                        <i class="fa-solid fa-calculator"></i> Precificação
-                    </a>
-                </li>
-                <li class="menu-item" style="margin-bottom: 0.5rem;">
-                    <a href="/produtos" class="menu-link active">
-                        <i class="fa-solid fa-box"></i> Produtos Cadastrados
-                    </a>
-                </li>
-                <li class="menu-item" style="margin-bottom: 0.5rem;">
-                    <a href="/perfil" class="menu-link">
-                        <i class="fa-solid fa-user-gear"></i> Perfil & Configurações
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <a href="/logout" class="btn-logout">
-            <i class="fa-solid fa-right-from-bracket"></i> Sair
-        </a>
-    </aside>
-
-    <main class="main-content" style="flex: 1; overflow-y: auto; padding: 2rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-            <div>
-                <a href="/produtos" style="color: #64748b; text-decoration: none; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.4rem; margin-bottom: 0.5rem;">
-                    <i class="fa-solid fa-arrow-left"></i> Voltar para Produtos
-                </a>
-                <h2 id="detalheNomeProduto">Carregando Produto...</h2>
-            </div>
-            <div style="display: flex; gap: 0.75rem;">
-                <a id="btnEditarDetalhe" href="#" style="background: #2563eb; color: white; padding: 0.65rem 1.25rem; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
-                    <i class="fa-solid fa-pen-to-square"></i> Editar Valores
-                </a>
-                <button onclick="excluirProdutoAtual()" style="background: #dc2626; color: white; border: none; padding: 0.65rem 1.25rem; border-radius: 6px; font-weight: 600; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
-                    <i class="fa-solid fa-trash"></i> Excluir Produto
-                </button>
-            </div>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; max-width: 1100px;">
-            <div class="card" style="background: #ffffff; border-radius: 8px; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: #1e293b;"><i class="fa-solid fa-coins"></i> Informações do Produto</h3>
-                <p id="detalheInfoTexto" style="color: #475569;">Carregando detalhes...</p>
-            </div>
-        </div>
-    </main>
-
-    <script>
-        let produtoIdGlobal = null;
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const id = urlParams.get('id');
-
-            if (!id) {
-                alert('Nenhum produto especificado.');
-                window.location.href = '/produtos';
-                return;
-            }
-
-            produtoIdGlobal = id;
-            document.getElementById('btnEditarDetalhe').href = `/precificacao?id=${id}`;
-            carregarDetalhesProduto(id);
-        });
-
-        async function carregarDetalhesProduto(id) {
-            try {
-                const response = await fetch(`/api/produtos/${id}`);
-                if (!response.ok) throw new Error('Produto não encontrado');
-                const p = await response.json();
-
-                document.getElementById('detalheNomeProduto').textContent = p.nome || 'Produto';
-                document.getElementById('detalheInfoTexto').innerHTML = `Preço de Venda: <b>R$ ${p.precoVendaCalculado || '0,00'}</b>`;
-            } catch (err) {
-                console.error(err);
-            }
-        }
-
-        async function excluirProdutoAtual() {
-            if (!produtoIdGlobal) return;
-            if (confirm('Tem certeza de que deseja excluir este produto permanentemente?')) {
-                try {
-                    const response = await fetch(`/api/produtos/${produtoIdGlobal}`, {
-                        method: 'DELETE'
-                    });
-
-                    if (response.ok) {
-                        alert('Produto excluído com sucesso!');
-                        window.location.href = '/produtos';
-                    } else {
-                        alert('Erro ao excluir o produto.');
-                    }
-                } catch (err) {
-                    console.error(err);
-                }
-            }
-        }
-    </script>
-</body>
-</html>
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Detalhe do Produto</title><link rel="stylesheet" href="/produto detalhe.css"><link rel="stylesheet" href="/app-shell.css"></head><body>
+<aside class="sidebar"><div class="sidebar-top"><div class="sidebar-brand-wrapper"><div class="sidebar-brand">⚡ E-Felicissimo</div><button class="theme-btn" id="btnTheme" onclick="toggleTheme()">🌙</button></div><ul class="sidebar-menu"><li><a href="/dashboard">🏠 Início</a></li><li><a href="/dashboard">📊 Dashboard</a></li><li><a href="/precificacao">🧮 Precificação</a></li><li><a class="active" href="/produtos">📦 Produtos Cadastrados</a></li><li><a href="/perfil">👤 Perfil & Configurações</a></li></ul></div><a href="/logout" class="btn-logout">🚪 Sair</a></aside>
+<main class="main-content product-detail-content"><div class="detail-header"><div><a href="/produtos">← Voltar para Produtos</a><h2 id="detalheNomeProduto">Carregando...</h2></div><div class="detail-actions"><a id="btnEditarDetalhe" class="detail-btn detail-btn-edit" href="/precificacao">🧮 Nova precificação</a><button onclick="excluirProdutoAtual()" class="detail-btn detail-btn-delete">🗑 Excluir</button></div></div>
+<div class="detail-grid"><section class="card detail-card"><h3>💰 Resumo financeiro</h3><div id="detalheInfoTexto">Carregando detalhes...</div></section><section class="card detail-card"><h3>📊 Como ler o gráfico</h3><p>A chance é uma estimativa de competitividade do preço: o preço sugerido recebe 70%; 10% abaixo chega a 95%; 10% acima cai para 35%. Não é previsão de vendas reais.</p></section></div>
+<section class="card detail-card marketplace-section"><h3>Probabilidade estimada por marketplace</h3><p>Compare o preço sugerido (X) com um preço 10% acima (Y). Cada barra representa a chance estimada de venda.</p><div id="charts" class="marketplace-grid"></div></section></main>
+<script>
+let produtoIdGlobal;const money=v=>Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+function toggleTheme(){const d=document.body,b=document.getElementById('btnTheme'),dark=d.hasAttribute('data-theme');d.toggleAttribute('data-theme',!dark);b.textContent=dark?'🌙':'☀️';localStorage.setItem('theme',dark?'light':'dark');}
+const chance=(price,suggested)=>{if(!suggested)return 0;const delta=(price-suggested)/suggested;return Math.max(5,Math.min(95,Math.round(70-delta*350)));};
+function chart(p){const x=Number(p.preco),y=x*1.1,cx=chance(x,x),cy=chance(y,x);return '<article class="marketplace-card"><strong>'+p.nome+'</strong><small>Comissão média: '+Number(p.taxa).toFixed(1)+'%</small><small>X: '+money(x)+' · '+cx+'%</small><div style="height:8px;background:#e2e8f0;border-radius:4px"><i style="display:block;width:'+cx+'%;height:100%;background:#2563eb;border-radius:4px"></i></div><small>Y (+10%): '+money(y)+' · '+cy+'%</small><div style="height:8px;background:#e2e8f0;border-radius:4px"><i style="display:block;width:'+cy+'%;height:100%;background:#f59e0b;border-radius:4px"></i></div></article>';}
+async function load(){const id=new URLSearchParams(location.search).get('id');if(!id){location.href='/produtos';return;}produtoIdGlobal=id;const r=await fetch('/api/produtos/'+id);if(!r.ok){alert('Produto não encontrado.');location.href='/produtos';return;}const p=await r.json();document.getElementById('detalheNomeProduto').textContent=p.nome;document.getElementById('detalheInfoTexto').innerHTML='<p><b>Custo total:</b> '+money(p.custoTotalCalculado)+'</p><p><b>Preço base:</b> '+money(p.precoVendaCalculado)+'</p><p><b>Lucro líquido:</b> '+money(p.lucroLiquidoCalculado)+'</p><p><b>Margem desejada:</b> '+Number(p.margemLucro||0).toFixed(2)+'%</p><p><b>NF:</b> '+Number(p.percentualNF||0).toFixed(2)+'%</p>';let list=p.marketplacePricing;try{if(typeof list==='string')list=JSON.parse(list);}catch(e){list=[];}document.getElementById('charts').innerHTML=list.length?list.map(chart).join(''):'<p>Nenhuma precificação por marketplace foi salva para este produto.</p>';}
+async function excluirProdutoAtual(){if(!confirm('Excluir este produto permanentemente?'))return;const r=await fetch('/api/produtos/'+produtoIdGlobal,{method:'DELETE'});if(r.ok)location.href='/produtos';else alert('Não foi possível excluir.');}
+document.addEventListener('DOMContentLoaded',()=>{if(localStorage.getItem('theme')==='dark'){document.body.setAttribute('data-theme','');document.getElementById('btnTheme').textContent='☀️';}load();});
+</script></body></html>

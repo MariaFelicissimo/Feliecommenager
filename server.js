@@ -56,14 +56,13 @@ app.get('/login', (req, res) => {
 
 // Perfil
 app.get('/api/perfil', profileController.obterPerfil);
+app.post('/api/perfil', profileController.salvarPerfil);
 
 // Produtos (CRUD completo com MySQL)
 app.get('/api/produtos', productController.listarProdutos);
 app.get('/api/produtos/:id', productController.buscarProdutoPorId);
 
-if (typeof productController.salvarProduto === 'function') {
-    app.post('/api/produtos', productController.salvarProduto);
-}
+app.post('/api/produtos', productController.salvarProduto);
 
 app.delete('/api/produtos/:id', productController.excluirProduto);
 

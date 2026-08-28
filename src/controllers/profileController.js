@@ -1,112 +1,33 @@
-// Simulação de banco de dados ou estado em memória para as configurações de perfil
-let dadosPerfil = {
-    tipoPessoa: 'cnpj', // 'cpf' ou 'cnpj'
-    documento: '',
-    usarNF: true,
-    percentualNF: 5.00,
-    usarEmbalagem: true,
-    custoEmbalagem: 2.00,
-    usarGasolina: true,
-    custoGasolina: 3.00,
-    usarOutros: false,
-    custoOutros: 0.00
-};
+const db = require('../config/database');
+const number = (value) => Math.max(0, Number(value) || 0);
+const format = (row) => ({
+    tipoPessoa: row.tipo_pessoa, documento: row.documento, usarNF: Boolean(row.usar_nf), percentualNF: Number(row.percentual_nf),
+    usarEmbalagem: Boolean(row.usar_embalagem), custoEmbalagem: Number(row.custo_embalagem),
+    usarGasolina: Boolean(row.usar_gasolina), custoGasolina: Number(row.custo_gasolina), usarOutros: Boolean(row.usar_outros), custoOutros: Number(row.custo_outros)
+});
 
-// Função para buscar as configurações atuais do perfil
-exports.obterPerfil = (req, res) => {
+exports.obterPerfil = async (req, res) => {
     try {
-        res.status(200).json(dadosPerfil);
+        await db.ready;
+        const [rows] = await db.query('SELECT * FROM perfis WHERE id = 1');
+        res.json(format(rows[0]));
     } catch (error) {
-        console.error('Erro ao obter perfil:', error);
-        res.status(500).json({ success: false, message: 'Erro ao buscar dados do perfil.' });
+        console.error('Erro ao obter perfil:', error.message);
+        res.status(500).json({ error: 'Erro ao buscar configurações do perfil.' });
     }
 };
 
-// Função para salvar e aplicar as regras de negócio completas
-exports.salvarPerfil = (req, res) => {
+exports.salvarPerfil = async (req, res) => {
     try {
-        const {
-            tipoPessoa,
-            documento,
-            usarNF,
-            percentualNF,
-            usarEmbalagem,
-            custoEmbalagem,
-            usarGasolina,
-            custoGasolina,
-            usarOutros,
-            custoOutros
-        } = req.body;
-
-        // REGRA DE NEGÓCIO: O usuário é obrigado a informar se é CPF ou CNPJ
-        if (!tipoPessoa || (tipoPessoa !== 'cpf' && tipoPessoa !== 'cnpj')) {
-            return res.status(400).json({ 
-                success: false, 
-                message: 'Você deve especificar se o cadastro é CPF ou CNPJ.' 
-            });
-        }
-
-        // REGRA DE NEGÓCIO: Validação do documento obrigatório de acordo com o tipo escolhido
-        if (!documento || documento.trim() === '') {
-            return res.status(400).json({ 
-                success: false, 
-                message: `O campo ${tipoPessoa.toUpperCase()} é obrigatório e não pode estar vazio.` 
-            });
-        }
-
-        // Limpeza básica do documento (removendo caracteres especiais se houver)
-        const documentoLimpo = documento.replace(/\D/g, '');
-
-        if (tipoPessoa === 'cpf' && documentoLimpo.length !== 11) {
-            return res.status(400).json({ 
-                success: false, 
-                message: 'CPF inválido. Deve conter exatamente 11 dígitos.' 
-            });
-        }
-
-        if (tipoPessoa === 'cnpj' && documentoLimpo.length !== 14) {
-            return res.status(400).json({ 
-                success: false, 
-                message: 'CNPJ inválido. Deve conter exatamente 14 dígitos.' 
-            });
-        }
-
-        // Validação de consistência para alíquotas e custos (não podem ser negativos)
-        const nfParsed = parseFloat(percentualNF) || 0;
-        const embalagemParsed = parseFloat(custoEmbalagem) || 0;
-        const gasolinaParsed = parseFloat(custoGasolina) || 0;
-        const outrosParsed = parseFloat(custoOutros) || 0;
-
-        if (nfParsed < 0 || embalagemParsed < 0 || gasolinaParsed < 0 || outrosParsed < 0) {
-            return res.status(400).json({ 
-                success: false, 
-                message: 'Os valores de custos e impostos não podem ser negativos.' 
-            });
-        }
-
-        // Atualização dos dados aplicando as regras validadas
-        dadosPerfil = {
-            tipoPessoa,
-            documento: documentoLimpo,
-            usarNF: !!usarNF,
-            percentualNF: nfParsed,
-            usarEmbalagem: !!usarEmbalagem,
-            custoEmbalagem: embalagemParsed,
-            usarGasolina: !!usarGasolina,
-            custoGasolina: gasolinaParsed,
-            usarOutros: !!usarOutros,
-            custoOutros: outrosParsed
-        };
-
-        console.log('✅ Configurações de perfil atualizadas com sucesso:', dadosPerfil);
-
-        res.status(200).json({ 
-            success: true, 
-            message: 'Perfil e configurações salvos com sucesso!',
-            dados: dadosPerfil 
-        });
+        await db.ready;
+        const body = req.body;
+        const values = [body.tipoPessoa === 'cpf' ? 'cpf' : 'cnpj', String(body.documento || '').replace(/\D/g, ''), !!body.usarNF,
+            number(body.percentualNF), !!body.usarEmbalagem, number(body.custoEmbalagem), !!body.usarGasolina,
+            number(body.custoGasolina), !!body.usarOutros, number(body.custoOutros)];
+        await db.query(`UPDATE perfis SET tipo_pessoa=?, documento=?, usar_nf=?, percentual_nf=?, usar_embalagem=?, custo_embalagem=?, usar_gasolina=?, custo_gasolina=?, usar_outros=?, custo_outros=? WHERE id=1`, values);
+        res.json({ success: true, message: 'Configurações salvas no banco de dados.' });
     } catch (error) {
-        console.error('Erro ao salvar perfil:', error);
-        res.status(500).json({ success: false, message: 'Erro interno ao salvar o perfil.' });
+        console.error('Erro ao salvar perfil:', error.message);
+        res.status(500).json({ error: 'Erro ao salvar configurações do perfil.' });
     }
 };

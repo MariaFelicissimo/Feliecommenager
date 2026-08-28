@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-Felicissimo | Produtos Cadastrados</title>
     <link rel="stylesheet" href="/produtos.css">
+    <link rel="stylesheet" href="/app-shell.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
 </head>
@@ -13,36 +14,20 @@
     <!-- BARRA LATERAL (SIDEBAR) -->
     <aside class="sidebar">
         <div class="sidebar-top">
-            <div class="sidebar-brand">
-                <i class="fa-solid fa-chart-line"></i> E-Felicissimo
+            <div class="sidebar-brand-wrapper">
+                <div class="sidebar-brand">⚡ E-Felicissimo</div>
+                <button class="theme-btn" id="btnTheme" onclick="toggleTheme()" title="Alternar Tema">🌙</button>
             </div>
             <ul class="sidebar-menu">
-                <li>
-                    <a href="/dashboard" class="menu-link">
-                        <i class="fa-solid fa-house"></i> Início
-                    </a>
-                </li>
-                <li>
-                    <a href="/precificacao" class="menu-link">
-                        <i class="fa-solid fa-calculator"></i> Precificação
-                    </a>
-                </li>
-                <li>
-                    <a href="/produtos" class="menu-link active">
-                        <i class="fa-solid fa-box"></i> Produtos Cadastrados
-                    </a>
-                </li>
-                <li>
-                    <a href="/perfil" class="menu-link">
-                        <i class="fa-solid fa-user-gear"></i> Perfil & Configurações
-                    </a>
-                </li>
+                <li><a href="/dashboard">🏠 Início</a></li>
+                <li><a href="/dashboard">📊 Dashboard</a></li>
+                <li><a href="/precificacao">🧮 Precificação</a></li>
+                <li><a href="/produtos" class="active">📦 Produtos Cadastrados</a></li>
+                <li><a href="/perfil">👤 Perfil & Configurações</a></li>
             </ul>
         </div>
         <div>
-            <a href="/logout" class="btn-logout">
-                <i class="fa-solid fa-right-from-bracket"></i> Sair
-            </a>
+            <a href="/logout" class="btn-logout">🚪 Sair</a>
         </div>
     </aside>
 
@@ -81,6 +66,11 @@
     <!-- SCRIPT DE CARREGAMENTO -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                document.getElementById('btnTheme').innerText = '☀️';
+            }
             carregarProdutos();
         });
 

@@ -1,94 +1,41 @@
-const Product = require('../models/Product'); // Importa o model que gerencia os produtos no banco
+const Product = require('../models/Product');
 
-// 1. Listar todos os produtos
-exports.listarProdutos = async (req, res) => {
-    try {
-        const produtos = await Product.findAll();
-        res.json(produtos);
-    } catch (err) {
-        console.error('❌ Erro ao listar produtos:', err.message);
-        res.status(500).json({ error: 'Erro ao listar produtos' });
-    }
+const numericFields = ['custoProducao', 'freteEntrada', 'custoEmbalagem', 'custoGasolina', 'custoOutros',
+    'percentualNF', 'taxaMarketplace', 'margemLucro', 'custoTotalCalculado', 'precoVendaCalculado', 'lucroLiquidoCalculado'];
+
+const normalizeProduct = (body) => {
+    const product = { nome: String(body.nome || '').trim(), marketplacePricing: Array.isArray(body.marketplacePricing) ? body.marketplacePricing : [] };
+    numericFields.forEach((field) => { product[field] = Math.max(0, Number(body[field]) || 0); });
+    return product;
 };
 
-// 2. Buscar produto por ID
+exports.listarProdutos = async (req, res) => {
+    try { res.json(await Product.findAll()); }
+    catch (error) { console.error('Erro ao listar produtos:', error.message); res.status(500).json({ error: 'Erro ao listar produtos.' }); }
+};
+
 exports.buscarProdutoPorId = async (req, res) => {
     try {
-        const { id } = req.params;
-        const produto = await Product.findByPk(id);
-        
-        if (!produto) {
-            return res.status(404).json({ error: 'Produto não encontrado' });
-        }
-        
+        const produto = await Product.findByPk(req.params.id);
+        if (!produto) return res.status(404).json({ error: 'Produto não encontrado.' });
         res.json(produto);
-    } catch (err) {
-        console.error('❌ Erro ao buscar produto:', err.message);
-        res.status(500).json({ error: 'Erro ao buscar produto' });
-    }
+    } catch (error) { console.error('Erro ao buscar produto:', error.message); res.status(500).json({ error: 'Erro ao buscar produto.' }); }
 };
 
-// 3. Cadastrar / Salvar novo produto (FUNÇÃO QUE FALTAVA)
 exports.salvarProduto = async (req, res) => {
     try {
-        const {
-            nome,
-            custoProducao,
-            freteEntrada,
-            custoEmbalagem,
-            custoGasolina,
-            custoOutros,
-            percentualNF,
-            taxaMarketplace,
-            margemLucro,
-            custoTotalCalculado,
-            precoVendaCalculado,
-            lucroLiquidoCalculado
-        } = req.body;
-
-        if (!nome || nome.trim() === '') {
-            return res.status(400).json({ error: 'O nome do produto é obrigatório.' });
-        }
-
-        // Cria o registro no banco usando o Sequelize
-        const novoProduto = await Product.create({
-            nome,
-            custoProducao,
-            freteEntrada,
-            custoEmbalagem,
-            custoGasolina,
-            custoOutros,
-            percentualNF,
-            taxaMarketplace,
-            margemLucro,
-            custoTotalCalculado,
-            precoVendaCalculado,
-            lucroLiquidoCalculado
-        });
-
-        console.log('✅ Produto salvo no banco com sucesso:', novoProduto.nome);
-        return res.status(201).json({ success: true, message: 'Produto cadastrado com sucesso!', produto: novoProduto });
-
-    } catch (err) {
-        console.error('❌ Erro ao salvar produto:', err.message);
-        res.status(500).json({ error: 'Erro ao salvar produto no banco de dados.' });
-    }
+        const data = normalizeProduct(req.body);
+        if (!data.nome) return res.status(400).json({ error: 'O nome do produto é obrigatório.' });
+        const produto = req.body.id ? await Product.update(req.body.id, data) : await Product.create(data);
+        if (!produto) return res.status(404).json({ error: 'Produto não encontrado para atualização.' });
+        res.status(req.body.id ? 200 : 201).json({ success: true, produto });
+    } catch (error) { console.error('Erro ao salvar produto:', error.message); res.status(500).json({ error: 'Erro ao salvar produto no banco de dados.' }); }
 };
 
-// 4. Excluir produto
 exports.excluirProduto = async (req, res) => {
     try {
-        const { id } = req.params;
-        const produto = await Product.findByPk(id);
-        
-        if (!produto) {
-            return res.status(404).json({ error: 'Produto não encontrado' });
-        }
-
-        await produto.destroy();
-        res.json({ success: true, message: 'Produto excluído com sucesso' });
-    } catch (err) {
-        console.error('❌ Erro ao excluir produto:', err.message);
-        res.status(500).json({ error: 'Erro ao excluir produto' });
-    }
+        const deleted = await Product.destroy(req.params.id);
+        if (!deleted) return res.status(404).json({ error: 'Produto não encontrado.' });
+        res.json({ success: true, message: 'Produto excluído com sucesso.' });
+    } catch (error) { console.error('Erro ao excluir produto:', error.message); res.status(500).json({ error: 'Erro ao excluir produto.' }); }
 };

@@ -2,7 +2,7 @@ const mysql = require('mysql2/promise');
 
 const pool = mysql.createPool({
     host: process.env.DB_HOST || 'localhost',
-    port: process.env.DB_PORT || 3306,
+    port: Number(process.env.DB_PORT || 3306),
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASS || '14253679',
     database: process.env.DB_NAME || 'feliecommenager',
@@ -11,73 +11,31 @@ const pool = mysql.createPool({
     queueLimit: 0
 });
 
-const criarTabelaPerfil = async () => {
-    const createTableSQL = `
-        CREATE TABLE IF NOT EXISTS perfis (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            tipo_margem_padrao VARCHAR(20) DEFAULT 'percentual',
-            usar_nf TINYINT(1) DEFAULT 0,
-            percentual_nf DECIMAL(5,2) DEFAULT 0.00,
-            usar_embalagem TINYINT(1) DEFAULT 0,
-            custo_embalagem DECIMAL(10,2) DEFAULT 0.00,
-            usar_gasolina TINYINT(1) DEFAULT 0,
-            custo_gasolina DECIMAL(10,2) DEFAULT 0.00,
-            usar_outros TINYINT(1) DEFAULT 0,
-            custo_outros DECIMAL(10,2) DEFAULT 0.00
-        );
-    `;
-
-    const insertInitialSQL = `
-        INSERT IGNORE INTO perfis (id) VALUES (1);
-    `;
-
-    try {
-        await pool.query(createTableSQL);
-        await pool.query(insertInitialSQL);
-        console.log('✅ Banco MySQL conectado e tabela "perfis" pronta!');
-    } catch (error) {
-        console.error('❌ Erro no banco de dados MySQL:', error);
+pool.ready = (async () => {
+    await pool.query(`CREATE TABLE IF NOT EXISTS perfis (
+        id INT PRIMARY KEY, tipo_pessoa VARCHAR(10) DEFAULT 'cnpj', documento VARCHAR(20) DEFAULT '',
+        usar_nf TINYINT(1) NOT NULL DEFAULT 1, percentual_nf DECIMAL(7,2) NOT NULL DEFAULT 0.00,
+        usar_embalagem TINYINT(1) NOT NULL DEFAULT 1, custo_embalagem DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+        usar_gasolina TINYINT(1) NOT NULL DEFAULT 1, custo_gasolina DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+        usar_outros TINYINT(1) NOT NULL DEFAULT 0, custo_outros DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP)`);
+    await pool.query('INSERT IGNORE INTO perfis (id) VALUES (1)');
+    for (const definition of ["tipo_pessoa VARCHAR(10) DEFAULT 'cnpj'", "documento VARCHAR(20) DEFAULT ''"]) {
+        try { await pool.query(`ALTER TABLE perfis ADD COLUMN ${definition}`); }
+        catch (error) { if (error.code !== 'ER_DUP_FIELDNAME') throw error; }
     }
-};
-const express = require('express');
-const app = express();
-
-// IMPORTANTE: Necessário para o Express conseguir ler dados em JSON enviados pelo front-end
-app.use(express.json());
-
-// Objeto temporário para guardar os dados do perfil (ou substitua pela gravação no seu banco de dados)
-let configuracoesPerfil = {
-    usarNF: false,
-    percentualNF: 0,
-    usarEmbalagem: false,
-    custoEmbalagem: 0,
-    usarGasolina: false,
-    custoGasolina: 0,
-    usarOutros: false,
-    custoOutros: 0
-};
-
-// 1. Rota que o front-end chama ao carregar a página para preencher os campos
-app.get('/api/perfil', (req, res) => {
-    res.json(configuracoesPerfil);
-});
-
-// 2. Rota que o front-end chama ao clicar em "Salvar Configurações"
-app.post('/api/perfil', (req, res) => {
-    try {
-        configuracoesPerfil = req.body;
-        console.log('Dados salvos:', configuracoesPerfil);
-        res.status(200).json({ success: true, message: 'Salvo com sucesso!' });
-    } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-    }
-});
-
-// Certifique-se de que seu servidor está ouvindo a porta (ex: 3000)
-app.listen(3000, () => {
-    console.log('Servidor rodando na porta 3000');
-});
-
-criarTabelaPerfil();
+    await pool.query(`CREATE TABLE IF NOT EXISTS produtos (
+        id INT AUTO_INCREMENT PRIMARY KEY, nome VARCHAR(255) NOT NULL,
+        custoProducao DECIMAL(12,2) NOT NULL DEFAULT 0.00, freteEntrada DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+        custoEmbalagem DECIMAL(12,2) NOT NULL DEFAULT 0.00, custoGasolina DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+        custoOutros DECIMAL(12,2) NOT NULL DEFAULT 0.00, percentualNF DECIMAL(7,2) NOT NULL DEFAULT 0.00,
+        taxaMarketplace DECIMAL(7,2) NOT NULL DEFAULT 0.00, margemLucro DECIMAL(7,2) NOT NULL DEFAULT 0.00,
+        custoTotalCalculado DECIMAL(12,2) NOT NULL DEFAULT 0.00, precoVendaCalculado DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+        lucroLiquidoCalculado DECIMAL(12,2) NOT NULL DEFAULT 0.00, marketplacePricing JSON NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP)`);
+    try { await pool.query('ALTER TABLE produtos ADD COLUMN marketplacePricing JSON NULL'); }
+    catch (error) { if (error.code !== 'ER_DUP_FIELDNAME') throw error; }
+    console.log('✅ Banco MySQL pronto para perfis e produtos.');
+})().catch((error) => { console.error('❌ Erro ao preparar o banco MySQL:', error.message); throw error; });
 
 module.exports = pool;
