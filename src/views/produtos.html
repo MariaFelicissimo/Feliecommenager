@@ -145,7 +145,19 @@
                 }
             }
         }
-
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.getElementById('btnTheme');
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                btn.innerText = '🌙';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                btn.innerText = '☀️';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
         function formatarMoeda(valor) {
             return Number(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
