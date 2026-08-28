@@ -35,6 +35,8 @@ pool.ready = (async () => {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP)`);
     try { await pool.query('ALTER TABLE produtos ADD COLUMN marketplacePricing JSON NULL'); }
     catch (error) { if (error.code !== 'ER_DUP_FIELDNAME') throw error; }
+    try { await pool.query("ALTER TABLE produtos ADD COLUMN tipoPessoa VARCHAR(10) NOT NULL DEFAULT 'cnpj'"); }
+    catch (error) { if (error.code !== 'ER_DUP_FIELDNAME') throw error; }
     console.log('✅ Banco MySQL pronto para perfis e produtos.');
 })().catch((error) => { console.error('❌ Erro ao preparar o banco MySQL:', error.message); throw error; });
 

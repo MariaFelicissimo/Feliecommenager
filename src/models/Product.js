@@ -2,15 +2,15 @@ const db = require('../config/database');
 
 const columns = ['nome', 'custoProducao', 'freteEntrada', 'custoEmbalagem', 'custoGasolina', 'custoOutros',
     'percentualNF', 'taxaMarketplace', 'margemLucro', 'custoTotalCalculado', 'precoVendaCalculado',
-    'lucroLiquidoCalculado', 'marketplacePricing'];
+    'lucroLiquidoCalculado', 'marketplacePricing', 'tipoPessoa'];
 
 const valuesFor = (data) => columns.map((column) => column === 'marketplacePricing'
     ? JSON.stringify(data[column] || []) : data[column] ?? 0);
 
 const Product = {
-    async findAll() {
+    async findAll(tipoPessoa) {
         await db.ready;
-        const [rows] = await db.query('SELECT * FROM produtos ORDER BY id DESC');
+        const [rows] = await db.query('SELECT * FROM produtos WHERE tipoPessoa = ? ORDER BY id DESC', [tipoPessoa]);
         return rows;
     },
     async findByPk(id) {

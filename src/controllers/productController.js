@@ -1,16 +1,17 @@
 const Product = require('../models/Product');
+const db = require('../config/database');
 
 const numericFields = ['custoProducao', 'freteEntrada', 'custoEmbalagem', 'custoGasolina', 'custoOutros',
     'percentualNF', 'taxaMarketplace', 'margemLucro', 'custoTotalCalculado', 'precoVendaCalculado', 'lucroLiquidoCalculado'];
 
 const normalizeProduct = (body) => {
-    const product = { nome: String(body.nome || '').trim(), marketplacePricing: Array.isArray(body.marketplacePricing) ? body.marketplacePricing : [] };
+    const product = { nome: String(body.nome || '').trim(), marketplacePricing: Array.isArray(body.marketplacePricing) ? body.marketplacePricing : [], tipoPessoa: 'cnpj' };
     numericFields.forEach((field) => { product[field] = Math.max(0, Number(body[field]) || 0); });
     return product;
 };
 
 exports.listarProdutos = async (req, res) => {
-    try { res.json(await Product.findAll()); }
+    try { await db.ready; const [rows] = await db.query('SELECT tipo_pessoa FROM perfis WHERE id=1'); res.json(await Product.findAll(rows[0].tipo_pessoa)); }
     catch (error) { console.error('Erro ao listar produtos:', error.message); res.status(500).json({ error: 'Erro ao listar produtos.' }); }
 };
 
@@ -25,6 +26,7 @@ exports.buscarProdutoPorId = async (req, res) => {
 exports.salvarProduto = async (req, res) => {
     try {
         const data = normalizeProduct(req.body);
+        await db.ready; const [profiles] = await db.query('SELECT tipo_pessoa FROM perfis WHERE id=1'); data.tipoPessoa = profiles[0].tipo_pessoa;
         if (!data.nome) return res.status(400).json({ error: 'O nome do produto é obrigatório.' });
         const produto = req.body.id ? await Product.update(req.body.id, data) : await Product.create(data);
         if (!produto) return res.status(404).json({ error: 'Produto não encontrado para atualização.' });
