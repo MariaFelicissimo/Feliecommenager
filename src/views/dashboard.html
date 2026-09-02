@@ -123,11 +123,19 @@
             if (body.getAttribute('data-theme') === 'dark') {
                 body.removeAttribute('data-theme');
                 btn.innerText = '🌙';
+                localStorage.setItem('theme', 'light');
             } else {
                 body.setAttribute('data-theme', 'dark');
                 btn.innerText = '☀️';
+                localStorage.setItem('theme', 'dark');
             }
         }
+        window.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('theme') === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                document.getElementById('btnTheme').innerText = '☀️';
+            }
+        });
     </script>
 </body>
 </html>
