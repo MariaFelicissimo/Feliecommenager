@@ -131,7 +131,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .marketplace-card { display: flex; min-height: 120px; flex-direction: column; justify-content: space-between; padding: 1rem; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-color); }
 .marketplace-card small { color: var(--text-muted); }
 .marketplace-card b { color: var(--primary); font-size: 1.1rem; }
-.detail-simulator { display: grid; grid-template-columns: minmax(190px, 320px) 1fr; align-items: end; gap: 1rem; margin: 1.25rem 0; padding: 1rem; background: var(--hover-bg); border: 1px solid var(--border-color); border-radius: 8px; }
+.detail-simulator { display: grid; grid-template-columns: repeat(3, minmax(180px, 1fr)); align-items: end; gap: 1rem; margin: 1.25rem 0; padding: 1rem; background: var(--hover-bg); border: 1px solid var(--border-color); border-radius: 8px; }
 .detail-simulator label { display: grid; gap: .4rem; color: var(--text-color); font-weight: 600; }
 .detail-simulator input { width: 100%; padding: .65rem .75rem; border: 1px solid var(--border-color); border-radius: 6px; }
 .suggested-price { color: var(--primary); font-weight: 700; }
@@ -146,4 +146,5 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
     .main-content { width: 100%; margin-left: 0; padding: 1.25rem; }
     .detail-header { align-items: flex-start; flex-direction: column; }
     .detail-grid { grid-template-columns: 1fr; }
+    .detail-simulator { grid-template-columns: 1fr; }
 }
